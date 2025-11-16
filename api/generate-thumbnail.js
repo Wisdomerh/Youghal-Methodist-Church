@@ -71,8 +71,8 @@ Output ONLY the DALL-E prompt, nothing else. No preamble, no explanation. Just t
         model: 'dall-e-3',
         prompt: prompt,
         n: 1,
-        size: '1792x1024', // YouTube thumbnail ratio
-        quality: 'standard',
+        size: '1792x1024', // Closest DALL-E 3 supports to 1920x1080 (will be resized)
+        quality: 'hd', // Changed to HD quality
         style: 'natural'
       })
     });
@@ -102,13 +102,18 @@ Output ONLY the DALL-E prompt, nothing else. No preamble, no explanation. Just t
     const data = JSON.parse(responseText);
     const imageUrl = data.data[0].url;
 
-    // Return the image URL and text overlay data
+    // Return the image URL - note: DALL-E generates 1792x1024
+    // User will need to resize to 1920x1080 or we can add resize endpoint
     return res.status(200).json({
       imageUrl: imageUrl,
+      originalSize: '1792x1024',
+      recommendedSize: '1920x1080',
+      note: 'Download and resize to 1920x1080 if needed. Add text overlay using image editor.',
       overlay: {
         title: sermonTitle,
         verse: bibleVerse,
-        church: 'Youghal Methodist Church'
+        church: 'Youghal Methodist Church',
+        textPlacement: 'Place title at bottom center, verse above it, church name at very bottom'
       }
     });
 
