@@ -13,8 +13,47 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Sermon title is required' });
     }
 
-    // Create theme-specific prompt for DALL-E
-    const prompt = generatePrompt(theme, sermonTitle);
+    // First, use Claude to analyze the sermon and create a custom DALL-E prompt
+    const claudeResponse = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': process.env.CLAUDE_API_KEY,
+        'anthropic-version': '2023-06-01'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 500,
+        messages: [{
+          role: 'user',
+          content: `Create a DALL-E prompt for a professional church service thumbnail background based on this sermon:
+
+Title: ${sermonTitle}
+Bible Verse: ${bibleVerse || 'N/A'}
+
+Requirements:
+- Professional photography style (NOT cartoon/illustration)
+- 16:9 horizontal aspect ratio
+- Suitable for text overlay (leave center/bottom area clear)
+- Incorporate Methodist colors (red, navy blue) subtly
+- Warm, welcoming, inspirational church atmosphere
+- Cinematic lighting
+- Must be appropriate for the sermon topic
+- Photorealistic, high quality
+
+Output ONLY the DALL-E prompt, nothing else. No preamble, no explanation. Just the prompt text.`
+        }]
+      })
+    });
+
+    if (!claudeResponse.ok) {
+      console.error('Claude API failed, falling back to theme-based prompt');
+      // Fall back to theme-based prompt if Claude fails
+      var prompt = generatePrompt(theme, sermonTitle);
+    } else {
+      const claudeData = await claudeResponse.json();
+      var prompt = claudeData.content[0].text.trim();
+    }
 
     // Check if API key exists
     if (!process.env.OPENAI_API_KEY) {
@@ -81,28 +120,28 @@ export default async function handler(req, res) {
 
 // Generate theme-specific prompts for DALL-E
 function generatePrompt(theme, sermonTitle) {
-  const baseStyle = 'Professional, warm, inspirational church service background. Clean, not cluttered. Suitable for text overlay. Methodist church aesthetic. Soft lighting, welcoming atmosphere.';
+  const baseStyle = `Professional church service thumbnail background for Methodist church. High quality, photorealistic, clean composition suitable for text overlay. Cinematic lighting, warm and welcoming atmosphere. Colors: incorporate red and navy blue (Methodist colors) subtly. 16:9 aspect ratio, horizontal layout. Leave space in center/bottom for text overlay. Professional photography style, NOT cartoon or illustration.`;
   
   const themePrompts = {
-    shepherd: `${baseStyle} Rolling green hills with a shepherd caring for sheep at golden hour. Peaceful pastoral scene. Gentle, caring atmosphere.`,
+    shepherd: `${baseStyle} Beautiful pastoral scene with rolling green hills and a shepherd caring for sheep during golden hour sunset. Warm, peaceful atmosphere with soft golden light. Gentle shepherd figure in distance tending flock. Professional nature photography. Serene and caring mood.`,
     
-    faith: `${baseStyle} Person standing on mountain peak at sunrise, arms raised in trust and faith. Vast sky, rays of light breaking through clouds. Hopeful and uplifting.`,
+    faith: `${baseStyle} Majestic mountain peak at sunrise with dramatic rays of light breaking through clouds. Person standing on summit with arms raised in triumph and faith. Vast expansive sky, inspiring and hopeful. Professional landscape photography with cinematic drama.`,
     
-    love: `${baseStyle} Warm golden light radiating outward, hearts and community gathering together. Compassionate, embracing atmosphere. Red and warm tones.`,
+    love: `${baseStyle} Warm golden sunlight radiating through stained glass window in church, casting colorful light. Community gathering in soft focus background. Compassionate, embracing atmosphere with rich reds and warm tones. Professional architectural photography.`,
     
-    hope: `${baseStyle} Dawn breaking over horizon, darkness giving way to brilliant light. New beginning, fresh start. Rays of hope piercing through.`,
+    hope: `${baseStyle} Beautiful dawn breaking over horizon, darkness giving way to brilliant golden light. New beginning, fresh start with rays of hope piercing through morning mist. Peaceful landscape, professional sunrise photography. Inspiring and uplifting mood.`,
     
-    worship: `${baseStyle} Hands raised in worship, soft stage lights, intimate worship atmosphere. Musical instruments subtly in background. Reverent and joyful.`,
+    worship: `${baseStyle} Intimate worship setting with soft stage lighting, warm spotlight beams, silhouettes of raised hands in worship. Musical instruments subtly visible. Reverent and joyful atmosphere with warm amber lighting. Professional concert photography style.`,
     
-    cross: `${baseStyle} Simple wooden cross silhouetted against beautiful sunset sky. Peaceful, contemplative. Focus on sacrifice and salvation.`,
+    cross: `${baseStyle} Simple wooden cross silhouetted against beautiful golden sunset sky over peaceful landscape. Contemplative mood, focus on sacrifice and salvation. Professional sunset photography with dramatic sky. Peaceful and reverent.`,
     
-    peace: `${baseStyle} Calm water reflecting sky, serene landscape, dove in flight. Tranquil atmosphere, soft blues and whites. Still and restful.`,
+    peace: `${baseStyle} Perfectly calm water reflecting beautiful sky, serene landscape with gentle morning mist. White dove in graceful flight. Tranquil atmosphere with soft blues and whites. Professional nature photography. Still and restful mood.`,
     
-    joy: `${baseStyle} Bright celebration, people with raised hands in joy, vibrant warm colors, confetti of light. Jubilant and festive church atmosphere.`,
+    joy: `${baseStyle} Bright celebration scene with warm golden light, joyful atmosphere, people with raised hands in celebration. Vibrant warm colors, confetti of light particles. Jubilant and festive mood. Professional event photography.`,
     
-    strength: `${baseStyle} Strong oak tree standing firm in wind, roots deep. Mountain landscape. Resilient, steadfast. Powerful but peaceful.`,
+    strength: `${baseStyle} Strong ancient oak tree with deep roots, standing firm against dramatic sky. Mountain landscape background. Resilient, steadfast feeling. Professional landscape photography with powerful composition.`,
     
-    community: `${baseStyle} Diverse group of people holding hands in circle, unity and togetherness. Warm community gathering, supportive atmosphere.`
+    community: `${baseStyle} Diverse group of people holding hands in circle formation, unity and togetherness. Warm community gathering with supportive atmosphere. Soft warm lighting, professional group photography. Inclusive and welcoming.`
   };
 
   return themePrompts[theme] || themePrompts.cross;

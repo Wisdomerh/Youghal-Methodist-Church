@@ -127,8 +127,8 @@
                 thumbnail: data.thumbnail
               });
 
-              // Auto-generate social captions
-              generateSocialCaptions();
+              // Auto-generate social captions immediately
+              await generateSocialCaptions();
 
             } catch (error) {
               console.error('Error:', error);
