@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Youghal Methodist Church - Content Generator</title>
+    <title>Youghal Methodist Church - Content System</title>
     <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
     <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
@@ -30,6 +30,12 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        .copy-success {
+            background: #4CAF50 !important;
+        }
+        @media (max-width: 768px) {
+            .desktop-only { display: none !important; }
+        }
     </style>
 </head>
 <body>
@@ -41,13 +47,13 @@
         // Icons
         const Calendar = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>;
         const FileText = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>;
+        const Video = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>;
         const Settings = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="3"></circle><path d="M12 1v6m0 6v6m8.66-15.66l-4.24 4.24m-8.49 8.49l-4.24 4.24M23 12h-6m-6 0H1m20.66 8.66l-4.24-4.24m-8.49-8.49l-4.24-4.24"></path></svg>;
         const CheckCircle = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>;
         const Download = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>;
         const Copy = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>;
-        const Plus = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>;
-        const Trash2 = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>;
         const Sparkles = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 3v3m0 12v3m9-9h-3M6 12H3m15.364-6.364l-2.121 2.121M8.757 15.243l-2.121 2.121m12.728 0l-2.121-2.121M8.757 8.757L6.636 6.636"></path></svg>;
+        const Package = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"></line><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>;
 
         const colors = {
           primary: '#DC143C',
@@ -57,15 +63,15 @@
           text: '#333333'
         };
 
-        function ChurchContentGenerator() {
+        function ChurchContentSystem() {
           const [activeTab, setActiveTab] = useState('generator');
           const [isGenerating, setIsGenerating] = useState(false);
           const [generatedContent, setGeneratedContent] = useState(null);
+          const [socialCaptions, setSocialCaptions] = useState(null);
           const [generatedThumbnail, setGeneratedThumbnail] = useState(null);
           const [isGeneratingThumbnail, setIsGeneratingThumbnail] = useState(false);
-          const [scheduledEvents, setScheduledEvents] = useState([
-            { id: 1, type: 'Sunday Service', date: '2025-11-17', time: '09:45', scheduled: true }
-          ]);
+          const [isGeneratingSocial, setIsGeneratingSocial] = useState(false);
+          const [copiedStates, setCopiedStates] = useState({});
           
           const [formData, setFormData] = useState({
             sermonTitle: '',
@@ -76,19 +82,17 @@
             date: new Date().toISOString().split('T')[0]
           });
 
-          const [eventForm, setEventForm] = useState({
-            type: 'Sunday Service',
-            date: '',
-            time: '09:45',
-            customMessage: ''
+          const [clipData, setClipData] = useState({
+            youtubeUrl: '',
+            timestamps: ''
           });
 
           const handleInputChange = (e) => {
             setFormData({ ...formData, [e.target.name]: e.target.value });
           };
 
-          const handleEventChange = (e) => {
-            setEventForm({ ...eventForm, [e.target.name]: e.target.value });
+          const handleClipInputChange = (e) => {
+            setClipData({ ...clipData, [e.target.name]: e.target.value });
           };
 
           const generateContent = async () => {
@@ -99,6 +103,7 @@
 
             setIsGenerating(true);
             setGeneratedContent(null);
+            setSocialCaptions(null);
             setGeneratedThumbnail(null);
 
             try {
@@ -122,11 +127,41 @@
                 thumbnail: data.thumbnail
               });
 
+              // Auto-generate social captions
+              generateSocialCaptions();
+
             } catch (error) {
               console.error('Error:', error);
               alert('Failed to generate content. Please try again.');
             } finally {
               setIsGenerating(false);
+            }
+          };
+
+          const generateSocialCaptions = async () => {
+            setIsGeneratingSocial(true);
+
+            try {
+              const response = await fetch('/api/generate-social-captions', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
+              });
+
+              if (!response.ok) {
+                throw new Error('Failed to generate social captions');
+              }
+
+              const data = await response.json();
+              setSocialCaptions(data);
+
+            } catch (error) {
+              console.error('Error:', error);
+              alert('Failed to generate social captions. Please try again.');
+            } finally {
+              setIsGeneratingSocial(false);
             }
           };
 
@@ -166,33 +201,44 @@
             }
           };
 
-          const addScheduledEvent = () => {
-            if (!eventForm.date || !eventForm.time) {
-              alert('Please fill in date and time');
-              return;
-            }
-
-            const newEvent = {
-              id: Date.now(),
-              type: eventForm.type,
-              date: eventForm.date,
-              time: eventForm.time,
-              customMessage: eventForm.customMessage,
-              scheduled: true
-            };
-
-            setScheduledEvents([...scheduledEvents, newEvent]);
-            setEventForm({ type: 'Sunday Service', date: '', time: '09:45', customMessage: '' });
-          };
-
-          const deleteEvent = (id) => {
-            setScheduledEvents(scheduledEvents.filter(e => e.id !== id));
-          };
-
-          const copyToClipboard = (text) => {
+          const copyToClipboard = (text, id) => {
             navigator.clipboard.writeText(text);
-            alert('Copied to clipboard!');
+            setCopiedStates({ ...copiedStates, [id]: true });
+            setTimeout(() => {
+              setCopiedStates({ ...copiedStates, [id]: false });
+            }, 2000);
           };
+
+          const CopyButton = ({ text, id, label }) => (
+            <button
+              onClick={() => copyToClipboard(text, id)}
+              style={{
+                backgroundColor: copiedStates[id] ? '#4CAF50' : colors.secondary,
+                color: colors.accent,
+                padding: '8px 16px',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                fontSize: '14px',
+                transition: 'all 0.3s'
+              }}
+            >
+              {copiedStates[id] ? (
+                <>
+                  <CheckCircle />
+                  Copied!
+                </>
+              ) : (
+                <>
+                  <Copy />
+                  {label}
+                </>
+              )}
+            </button>
+          );
 
           return (
             <div style={{ 
@@ -211,7 +257,7 @@
                     Youghal Methodist Church
                   </h1>
                   <p style={{ margin: '5px 0 0 0', opacity: 0.9, fontSize: '14px' }}>
-                    AI-Powered Content Generator
+                    AI-Powered Content System
                   </p>
                 </div>
               </div>
@@ -219,19 +265,20 @@
               {/* Navigation */}
               <div style={{
                 backgroundColor: colors.secondary,
-                borderBottom: `2px solid ${colors.primary}`
+                borderBottom: `2px solid ${colors.primary}`,
+                overflowX: 'auto'
               }}>
                 <div style={{ 
                   maxWidth: '1200px', 
                   margin: '0 auto',
                   display: 'flex',
                   gap: '0',
-                  flexWrap: 'wrap'
+                  minWidth: 'max-content'
                 }}>
                   {[
                     { id: 'generator', label: 'Content Generator', icon: FileText },
-                    { id: 'scheduler', label: 'Event Scheduler', icon: Calendar },
-                    { id: 'guide', label: 'Setup Guide', icon: Settings }
+                    { id: 'clips', label: 'Video Clips', icon: Video },
+                    { id: 'guide', label: 'Guide', icon: Settings }
                   ].map(tab => {
                     const Icon = tab.icon;
                     return (
@@ -249,7 +296,8 @@
                           display: 'flex',
                           alignItems: 'center',
                           gap: '8px',
-                          transition: 'all 0.2s'
+                          transition: 'all 0.2s',
+                          whiteSpace: 'nowrap'
                         }}
                       >
                         <Icon />
@@ -266,6 +314,7 @@
                 {/* CONTENT GENERATOR TAB */}
                 {activeTab === 'generator' && (
                   <div>
+                    {/* Input Form */}
                     <div style={{
                       backgroundColor: 'white',
                       borderRadius: '8px',
@@ -308,38 +357,17 @@
                           />
                         </div>
 
-                        <div>
-                          <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500', color: colors.text }}>
-                            Bible Verses *
-                          </label>
-                          <input
-                            type="text"
-                            name="bibleVerses"
-                            value={formData.bibleVerses}
-                            onChange={handleInputChange}
-                            placeholder="e.g., Hebrews 11:1-6"
-                            style={{
-                              width: '100%',
-                              padding: '12px',
-                              border: `2px solid ${colors.bg}`,
-                              borderRadius: '4px',
-                              fontSize: '14px',
-                              boxSizing: 'border-box'
-                            }}
-                          />
-                        </div>
-
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: window.innerWidth > 768 ? '2fr 1fr 1fr' : '1fr', gap: '20px' }}>
                           <div>
                             <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500', color: colors.text }}>
-                              Pastor/Speaker Name
+                              Bible Verses *
                             </label>
                             <input
                               type="text"
-                              name="pastorName"
-                              value={formData.pastorName}
+                              name="bibleVerses"
+                              value={formData.bibleVerses}
                               onChange={handleInputChange}
-                              placeholder="e.g., Rev. John Smith"
+                              placeholder="e.g., Hebrews 11:1-6"
                               style={{
                                 width: '100%',
                                 padding: '12px',
@@ -353,7 +381,28 @@
 
                           <div>
                             <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500', color: colors.text }}>
-                              Service Date
+                              Pastor/Speaker
+                            </label>
+                            <input
+                              type="text"
+                              name="pastorName"
+                              value={formData.pastorName}
+                              onChange={handleInputChange}
+                              placeholder="Rev. Smith"
+                              style={{
+                                width: '100%',
+                                padding: '12px',
+                                border: `2px solid ${colors.bg}`,
+                                borderRadius: '4px',
+                                fontSize: '14px',
+                                boxSizing: 'border-box'
+                              }}
+                            />
+                          </div>
+
+                          <div>
+                            <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500', color: colors.text }}>
+                              Date
                             </label>
                             <input
                               type="date"
@@ -381,7 +430,7 @@
                             name="keyPoints"
                             value={formData.keyPoints}
                             onChange={handleInputChange}
-                            placeholder="e.g., Faith, Trust, Obedience (comma separated)"
+                            placeholder="e.g., Faith, Trust, Obedience"
                             style={{
                               width: '100%',
                               padding: '12px',
@@ -436,19 +485,19 @@
                           {isGenerating ? (
                             <>
                               <div className="spinner"></div>
-                              Generating with AI...
+                              Generating Complete Package...
                             </>
                           ) : (
                             <>
-                              <Sparkles />
-                              Generate AI Content
+                              <Package />
+                              Generate Content Package
                             </>
                           )}
                         </button>
                       </div>
                     </div>
 
-                    {/* Generated Content Preview */}
+                    {/* Generated Content Package */}
                     {generatedContent && (
                       <div style={{
                         backgroundColor: 'white',
@@ -459,45 +508,66 @@
                         <h3 style={{ 
                           marginTop: 0, 
                           color: colors.secondary,
-                          fontSize: '18px',
-                          marginBottom: '20px'
+                          fontSize: '20px',
+                          marginBottom: '20px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '10px'
                         }}>
-                          Generated Content
+                          <Package />
+                          Your Content Package
                         </h3>
+
+                        <div style={{
+                          padding: '15px',
+                          backgroundColor: '#e8f5e9',
+                          borderRadius: '8px',
+                          marginBottom: '30px',
+                          borderLeft: `4px solid ${colors.primary}`
+                        }}>
+                          <strong>✅ Everything ready to post!</strong>
+                          <p style={{ margin: '10px 0 0 0', fontSize: '14px' }}>
+                            Click the copy buttons below, then paste into each platform. Takes ~3 minutes total.
+                          </p>
+                        </div>
 
                         {/* Thumbnail Section */}
                         <div style={{ marginBottom: '30px' }}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px', flexWrap: 'wrap', gap: '10px' }}>
-                            <h4 style={{ margin: 0, color: colors.text }}>📸 Thumbnail</h4>
-                            <button
-                              onClick={generateThumbnail}
-                              disabled={isGeneratingThumbnail}
-                              style={{
-                                backgroundColor: colors.secondary,
-                                color: colors.accent,
-                                padding: '8px 16px',
-                                border: 'none',
-                                borderRadius: '4px',
-                                cursor: isGeneratingThumbnail ? 'not-allowed' : 'pointer',
-                                opacity: isGeneratingThumbnail ? 0.6 : 1,
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '8px',
-                                fontSize: '14px'
-                              }}
-                            >
-                              {isGeneratingThumbnail ? (
-                                <>
-                                  <div className="spinner"></div>
-                                  Generating AI Image...
-                                </>
-                              ) : (
-                                <>
-                                  <Sparkles />
-                                  Generate AI Thumbnail
-                                </>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px', flexWrap: 'wrap', gap: '10px' }}>
+                            <h4 style={{ margin: 0, color: colors.text, fontSize: '18px' }}>📸 Thumbnail</h4>
+                            <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                              {!generatedThumbnail && (
+                                <button
+                                  onClick={generateThumbnail}
+                                  disabled={isGeneratingThumbnail}
+                                  style={{
+                                    backgroundColor: colors.primary,
+                                    color: colors.accent,
+                                    padding: '8px 16px',
+                                    border: 'none',
+                                    borderRadius: '4px',
+                                    cursor: isGeneratingThumbnail ? 'not-allowed' : 'pointer',
+                                    opacity: isGeneratingThumbnail ? 0.6 : 1,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '8px',
+                                    fontSize: '14px'
+                                  }}
+                                >
+                                  {isGeneratingThumbnail ? (
+                                    <>
+                                      <div className="spinner"></div>
+                                      Generating...
+                                    </>
+                                  ) : (
+                                    <>
+                                      <Sparkles />
+                                      Generate AI Thumbnail
+                                    </>
+                                  )}
+                                </button>
                               )}
-                            </button>
+                            </div>
                           </div>
 
                           {generatedThumbnail ? (
@@ -507,31 +577,34 @@
                                 alt="AI Generated Thumbnail"
                                 style={{
                                   width: '100%',
+                                  maxWidth: '800px',
                                   borderRadius: '8px',
-                                  marginBottom: '10px'
+                                  marginBottom: '15px',
+                                  boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
                                 }}
                               />
-                              <p style={{ fontSize: '12px', color: '#666' }}>
-                                ✨ AI-generated background. Download and add text overlay in your preferred editor.
-                              </p>
                               <a 
                                 href={generatedThumbnail.imageUrl} 
-                                download="thumbnail.png"
+                                download={`${formData.sermonTitle.replace(/\s+/g, '-')}-thumbnail.png`}
                                 style={{
                                   backgroundColor: colors.secondary,
                                   color: colors.accent,
-                                  padding: '8px 16px',
+                                  padding: '10px 20px',
                                   borderRadius: '4px',
                                   textDecoration: 'none',
                                   display: 'inline-flex',
                                   alignItems: 'center',
                                   gap: '8px',
-                                  fontSize: '14px'
+                                  fontSize: '14px',
+                                  fontWeight: '600'
                                 }}
                               >
                                 <Download />
-                                Download Image
+                                Download Thumbnail
                               </a>
+                              <p style={{ fontSize: '12px', color: '#666', marginTop: '10px' }}>
+                                ✨ AI-generated contextual background. Add text overlay in your editor if needed.
+                              </p>
                             </div>
                           ) : (
                             <div style={{
@@ -542,58 +615,84 @@
                               color: colors.accent,
                               backgroundImage: `linear-gradient(135deg, ${colors.secondary} 0%, ${colors.primary} 100%)`
                             }}>
-                              <div style={{ fontSize: '32px', fontWeight: '700', marginBottom: '15px', textShadow: '2px 2px 4px rgba(0,0,0,0.3)' }}>
+                              <div style={{ fontSize: '28px', fontWeight: '700', marginBottom: '15px', textShadow: '2px 2px 4px rgba(0,0,0,0.3)' }}>
                                 {generatedContent.thumbnail.title}
                               </div>
-                              <div style={{ fontSize: '18px', opacity: 0.9, fontStyle: 'italic' }}>
+                              <div style={{ fontSize: '16px', opacity: 0.9, fontStyle: 'italic' }}>
                                 {generatedContent.thumbnail.verse}
                               </div>
                               <div style={{ marginTop: '20px', fontSize: '14px', opacity: 0.8 }}>
                                 Youghal Methodist Church
                               </div>
-                              <div style={{ marginTop: '20px', fontSize: '12px', opacity: 0.7 }}>
-                                Click "Generate AI Thumbnail" for custom background
-                              </div>
                             </div>
                           )}
                         </div>
 
-                        {/* Description */}
+                        {/* Social Media Captions */}
+                        {socialCaptions && (
+                          <div style={{ marginBottom: '30px' }}>
+                            <h4 style={{ color: colors.text, fontSize: '18px', marginBottom: '15px' }}>📱 Social Media Captions</h4>
+                            
+                            <div style={{ display: 'grid', gap: '20px' }}>
+                              {/* Instagram */}
+                              <div style={{ padding: '20px', backgroundColor: colors.bg, borderRadius: '8px', borderLeft: `4px solid #E1306C` }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px', flexWrap: 'wrap', gap: '10px' }}>
+                                  <strong style={{ color: '#E1306C' }}>Instagram</strong>
+                                  <CopyButton text={socialCaptions.instagram} id="instagram" label="Copy for Instagram" />
+                                </div>
+                                <p style={{ margin: 0, fontSize: '14px', whiteSpace: 'pre-wrap', color: colors.text }}>
+                                  {socialCaptions.instagram}
+                                </p>
+                              </div>
+
+                              {/* Facebook */}
+                              <div style={{ padding: '20px', backgroundColor: colors.bg, borderRadius: '8px', borderLeft: `4px solid #1877F2` }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px', flexWrap: 'wrap', gap: '10px' }}>
+                                  <strong style={{ color: '#1877F2' }}>Facebook</strong>
+                                  <CopyButton text={socialCaptions.facebook} id="facebook" label="Copy for Facebook" />
+                                </div>
+                                <p style={{ margin: 0, fontSize: '14px', whiteSpace: 'pre-wrap', color: colors.text }}>
+                                  {socialCaptions.facebook}
+                                </p>
+                              </div>
+
+                              {/* Going Live Announcement */}
+                              <div style={{ padding: '20px', backgroundColor: colors.bg, borderRadius: '8px', borderLeft: `4px solid ${colors.primary}` }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px', flexWrap: 'wrap', gap: '10px' }}>
+                                  <strong style={{ color: colors.primary }}>Going Live Announcement</strong>
+                                  <CopyButton text={socialCaptions.goingLive} id="goingLive" label="Copy" />
+                                </div>
+                                <p style={{ margin: 0, fontSize: '14px', whiteSpace: 'pre-wrap', color: colors.text }}>
+                                  {socialCaptions.goingLive}
+                                </p>
+                                <p style={{ fontSize: '12px', color: '#666', marginTop: '10px' }}>
+                                  💡 Post this 15 minutes before going live
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* YouTube Description */}
                         <div>
                           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px', flexWrap: 'wrap', gap: '10px' }}>
-                            <h4 style={{ margin: 0, color: colors.text }}>📝 YouTube Description</h4>
-                            <button
-                              onClick={() => copyToClipboard(generatedContent.description)}
-                              style={{
-                                backgroundColor: colors.secondary,
-                                color: colors.accent,
-                                padding: '8px 16px',
-                                border: 'none',
-                                borderRadius: '4px',
-                                cursor: 'pointer',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '8px',
-                                fontSize: '14px'
-                              }}
-                            >
-                              <Copy />
-                              Copy
-                            </button>
+                            <h4 style={{ margin: 0, color: colors.text, fontSize: '18px' }}>📺 YouTube Description</h4>
+                            <CopyButton text={generatedContent.description} id="youtube" label="Copy for YouTube" />
                           </div>
                           <textarea
                             value={generatedContent.description}
                             readOnly
                             style={{
                               width: '100%',
-                              minHeight: '300px',
+                              minHeight: '250px',
                               padding: '15px',
                               border: `2px solid ${colors.bg}`,
                               borderRadius: '4px',
                               fontSize: '14px',
                               fontFamily: 'monospace',
                               boxSizing: 'border-box',
-                              resize: 'vertical'
+                              resize: 'vertical',
+                              backgroundColor: '#fafafa'
                             }}
                           />
                         </div>
@@ -602,15 +701,172 @@
                   </div>
                 )}
 
-                {/* EVENT SCHEDULER TAB - (keeping the same as before) */}
-                {activeTab === 'scheduler' && (
-                  <div style={{ textAlign: 'center', padding: '60px 20px' }}>
-                    <h2>Event Scheduler Coming Soon</h2>
-                    <p>This feature will be enabled once social media APIs are connected.</p>
+                {/* VIDEO CLIPS TAB */}
+                {activeTab === 'clips' && (
+                  <div>
+                    <div style={{
+                      backgroundColor: 'white',
+                      borderRadius: '8px',
+                      padding: '30px',
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                      marginBottom: '20px'
+                    }}>
+                      <h2 style={{ 
+                        marginTop: 0, 
+                        color: colors.secondary,
+                        fontSize: '20px',
+                        marginBottom: '20px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '10px'
+                      }}>
+                        <Video />
+                        AI Video Clip Analyzer
+                      </h2>
+
+                      <div style={{
+                        padding: '20px',
+                        backgroundColor: '#fff3cd',
+                        borderRadius: '8px',
+                        marginBottom: '20px',
+                        borderLeft: `4px solid #ffc107`
+                      }}>
+                        <strong>🚧 Coming Soon!</strong>
+                        <p style={{ margin: '10px 0 0 0', fontSize: '14px' }}>
+                          This feature will analyze your service video and automatically suggest the best moments for short-form content (Reels/Shorts/TikTok).
+                        </p>
+                      </div>
+
+                      <h3 style={{ color: colors.text, fontSize: '18px', marginBottom: '15px' }}>
+                        What This Will Do:
+                      </h3>
+
+                      <div style={{ display: 'grid', gap: '15px' }}>
+                        <div style={{ padding: '15px', backgroundColor: colors.bg, borderRadius: '8px' }}>
+                          <strong>1️⃣ Paste YouTube URL</strong>
+                          <p style={{ margin: '5px 0 0 0', fontSize: '14px', color: '#666' }}>
+                            Link your Sunday service video from YouTube
+                          </p>
+                        </div>
+
+                        <div style={{ padding: '15px', backgroundColor: colors.bg, borderRadius: '8px' }}>
+                          <strong>2️⃣ AI Analyzes the Video</strong>
+                          <p style={{ margin: '5px 0 0 0', fontSize: '14px', color: '#666' }}>
+                            Identifies powerful sermon moments, worship peaks, and quotable content
+                          </p>
+                        </div>
+
+                        <div style={{ padding: '15px', backgroundColor: colors.bg, borderRadius: '8px' }}>
+                          <strong>3️⃣ Suggests 5-7 Clips</strong>
+                          <p style={{ margin: '5px 0 0 0', fontSize: '14px', color: '#666' }}>
+                            30-90 second clips perfect for social media
+                          </p>
+                        </div>
+
+                        <div style={{ padding: '15px', backgroundColor: colors.bg, borderRadius: '8px' }}>
+                          <strong>4️⃣ You Review & Approve</strong>
+                          <p style={{ margin: '5px 0 0 0', fontSize: '14px', color: '#666' }}>
+                            Pick the 2-3 best clips
+                          </p>
+                        </div>
+
+                        <div style={{ padding: '15px', backgroundColor: colors.bg, borderRadius: '8px' }}>
+                          <strong>5️⃣ Download Ready-to-Post Clips</strong>
+                          <p style={{ margin: '5px 0 0 0', fontSize: '14px', color: '#666' }}>
+                            Vertical format (9:16), with captions, ready for Reels/Shorts/TikTok
+                          </p>
+                        </div>
+                      </div>
+
+                      <div style={{
+                        marginTop: '30px',
+                        padding: '20px',
+                        backgroundColor: '#e3f2fd',
+                        borderRadius: '8px',
+                        borderLeft: `4px solid #2196F3`
+                      }}>
+                        <strong>📅 Available Next Update</strong>
+                        <p style={{ margin: '10px 0 0 0', fontSize: '14px' }}>
+                          We'll build this feature together this weekend. It will save you hours of manual video editing every week!
+                        </p>
+                      </div>
+
+                      {/* Placeholder for manual timestamps */}
+                      <div style={{ marginTop: '30px' }}>
+                        <h3 style={{ color: colors.text, fontSize: '18px', marginBottom: '15px' }}>
+                          Manual Mode (Available Now)
+                        </h3>
+                        <p style={{ fontSize: '14px', color: '#666', marginBottom: '15px' }}>
+                          If you know which moments you want, enter the timestamps:
+                        </p>
+
+                        <div style={{ display: 'grid', gap: '15px' }}>
+                          <div>
+                            <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500', color: colors.text }}>
+                              YouTube URL
+                            </label>
+                            <input
+                              type="text"
+                              name="youtubeUrl"
+                              value={clipData.youtubeUrl}
+                              onChange={handleClipInputChange}
+                              placeholder="https://youtube.com/watch?v=..."
+                              style={{
+                                width: '100%',
+                                padding: '12px',
+                                border: `2px solid ${colors.bg}`,
+                                borderRadius: '4px',
+                                fontSize: '14px',
+                                boxSizing: 'border-box'
+                              }}
+                            />
+                          </div>
+
+                          <div>
+                            <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500', color: colors.text }}>
+                              Timestamps (one per line)
+                            </label>
+                            <textarea
+                              name="timestamps"
+                              value={clipData.timestamps}
+                              onChange={handleClipInputChange}
+                              placeholder="10:23 - Powerful sermon moment&#10;34:15 - Worship peak&#10;48:00 - Closing prayer"
+                              style={{
+                                width: '100%',
+                                minHeight: '120px',
+                                padding: '12px',
+                                border: `2px solid ${colors.bg}`,
+                                borderRadius: '4px',
+                                fontSize: '14px',
+                                boxSizing: 'border-box',
+                                fontFamily: 'monospace'
+                              }}
+                            />
+                          </div>
+
+                          <button
+                            disabled
+                            style={{
+                              backgroundColor: '#ccc',
+                              color: '#666',
+                              padding: '15px 30px',
+                              border: 'none',
+                              borderRadius: '4px',
+                              fontSize: '16px',
+                              fontWeight: '600',
+                              cursor: 'not-allowed',
+                              opacity: 0.6
+                            }}
+                          >
+                            Generate Clips (Coming Soon)
+                          </button>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 )}
 
-                {/* SETUP GUIDE TAB */}
+                {/* GUIDE TAB */}
                 {activeTab === 'guide' && (
                   <div style={{
                     backgroundColor: 'white',
@@ -624,60 +880,131 @@
                       fontSize: '20px',
                       marginBottom: '20px'
                     }}>
-                      Setup Status
+                      System Status & Guide
                     </h2>
 
                     <div style={{ lineHeight: '1.8', color: colors.text }}>
                       <div style={{
-                        marginTop: '20px',
                         padding: '20px',
                         backgroundColor: '#e8f5e9',
                         borderRadius: '8px',
+                        marginBottom: '20px',
                         borderLeft: `4px solid ${colors.primary}`
                       }}>
                         <strong>✅ What's Working Now:</strong>
-                        <ul style={{ marginBottom: 0 }}>
+                        <ul style={{ marginBottom: 0, marginTop: '10px' }}>
                           <li>✨ AI-powered YouTube descriptions (Claude API)</li>
                           <li>✨ AI thumbnail generation (DALL-E 3)</li>
-                          <li>📱 Cloud-hosted (accessible from anywhere)</li>
-                          <li>🔒 API keys securely stored in Vercel</li>
+                          <li>✨ Multi-platform social media captions</li>
+                          <li>📦 Complete content packages</li>
+                          <li>📱 One-click copy buttons</li>
+                          <li>☁️ Cloud-hosted (accessible anywhere)</li>
+                          <li>🔒 API keys securely stored</li>
                         </ul>
                       </div>
 
                       <div style={{
-                        marginTop: '20px',
                         padding: '20px',
                         backgroundColor: '#fff3cd',
                         borderRadius: '8px',
+                        marginBottom: '20px',
                         borderLeft: `4px solid #ffc107`
                       }}>
-                        <strong>⚠️ Next Phase:</strong>
-                        <ul style={{ marginBottom: 0 }}>
-                          <li>Facebook/Instagram auto-posting</li>
-                          <li>Video clip analysis</li>
-                          <li>Scheduled post automation</li>
+                        <strong>🚧 Coming Next:</strong>
+                        <ul style={{ marginBottom: 0, marginTop: '10px' }}>
+                          <li>🎬 AI Video Clip Analyzer</li>
+                          <li>📊 Auto-suggest best moments from services</li>
+                          <li>✂️ Generate vertical clips for Reels/Shorts/TikTok</li>
+                          <li>💬 Auto-generated captions for clips</li>
                         </ul>
                       </div>
 
-                      <h3 style={{ color: colors.primary, marginTop: '30px' }}>How to Use</h3>
-                      <ol>
-                        <li>Fill in sermon details in Content Generator</li>
-                        <li>Click "Generate AI Content"</li>
-                        <li>Wait 5-10 seconds for AI processing</li>
-                        <li>Copy description to YouTube</li>
-                        <li>Click "Generate AI Thumbnail" for custom background</li>
-                        <li>Download and use!</li>
-                      </ol>
+                      <h3 style={{ color: colors.primary, marginTop: '30px' }}>How to Use (Your Workflow)</h3>
+                      
+                      <div style={{ backgroundColor: colors.bg, padding: '20px', borderRadius: '8px', marginTop: '15px' }}>
+                        <strong>📅 During the Week (2 minutes):</strong>
+                        <ol style={{ marginTop: '10px' }}>
+                          <li>Pastor sends you sermon details</li>
+                          <li>Open this app on any device</li>
+                          <li>Fill in sermon title, Bible verses, key points</li>
+                          <li>Click "Generate Content Package"</li>
+                          <li>Wait 10 seconds for AI generation</li>
+                        </ol>
+                      </div>
 
-                      <h3 style={{ color: colors.primary, marginTop: '30px' }}>💰 Current Monthly Cost</h3>
+                      <div style={{ backgroundColor: colors.bg, padding: '20px', borderRadius: '8px', marginTop: '15px' }}>
+                        <strong>📱 When Ready to Post (3 minutes):</strong>
+                        <ol style={{ marginTop: '10px' }}>
+                          <li><strong>YouTube:</strong> Copy description → Paste into YouTube</li>
+                          <li><strong>Instagram:</strong> Copy caption → Post with thumbnail</li>
+                          <li><strong>Facebook:</strong> Copy post → Share on Cork Circuits page</li>
+                          <li><strong>Download thumbnail</strong> for all platforms</li>
+                        </ol>
+                      </div>
+
+                      <div style={{ backgroundColor: colors.bg, padding: '20px', borderRadius: '8px', marginTop: '15px' }}>
+                        <strong>🔴 Before Going Live (30 seconds):</strong>
+                        <ol style={{ marginTop: '10px' }}>
+                          <li>Copy "Going Live" announcement</li>
+                          <li>Post to Instagram/Facebook 15 minutes before service</li>
+                        </ol>
+                      </div>
+
+                      <h3 style={{ color: colors.primary, marginTop: '30px' }}>💰 Current Costs</h3>
                       <ul>
-                        <li>Hosting: <strong>$0</strong> (Vercel free tier)</li>
+                        <li>Hosting (Vercel): <strong>$0/month</strong></li>
                         <li>Claude API: <strong>~$1-3/month</strong> (actual usage)</li>
-                        <li>OpenAI API: <strong>~$0.50-2/month</strong> (actual usage)</li>
+                        <li>OpenAI DALL-E: <strong>~$0.50-2/month</strong> (actual usage)</li>
                         <li><strong>Total: ~$2-5/month</strong></li>
                       </ul>
+                      <p style={{ fontSize: '14px', color: '#666' }}>
+                        You only pay for what you use. Generating 4-5 content packages per month costs just a few dollars!
+                      </p>
 
-                      <p>You'll only be charged for what you actually use. Generating 4-5 pieces of content per month will cost just a few dollars!</p>
+                      <h3 style={{ color: colors.primary, marginTop: '30px' }}>⏱️ Time Savings</h3>
+                      <div style={{ display: 'grid', gridTemplateColumns: window.innerWidth > 768 ? '1fr 1fr' : '1fr', gap: '15px', marginTop: '15px' }}>
+                        <div style={{ padding: '15px', backgroundColor: '#ffebee', borderRadius: '8px' }}>
+                          <strong style={{ color: '#c62828' }}>Before (Manual):</strong>
+                          <ul style={{ fontSize: '14px', marginTop: '10px' }}>
+                            <li>Writing descriptions: 20 min</li>
+                            <li>Creating thumbnails: 15 min</li>
+                            <li>Social captions: 10 min</li>
+                            <li><strong>Total: 45 min/week</strong></li>
+                          </ul>
+                        </div>
+                        <div style={{ padding: '15px', backgroundColor: '#e8f5e9', borderRadius: '8px' }}>
+                          <strong style={{ color: '#2e7d32' }}>Now (AI-Powered):</strong>
+                          <ul style={{ fontSize: '14px', marginTop: '10px' }}>
+                            <li>Generate package: 10 sec</li>
+                            <li>Copy/paste: 3 min</li>
+                            <li><strong>Total: ~3 min/week</strong></li>
+                          </ul>
+                        </div>
+                      </div>
+                      <p style={{ marginTop: '15px', fontSize: '16px', fontWeight: '600', color: colors.primary }}>
+                        ⏰ You're saving ~42 minutes every week! That's 36 hours per year!
+                      </p>
+
+                      <h3 style={{ color: colors.primary, marginTop: '30px' }}>🔮 What's Next</h3>
+                      <p>The video clip analyzer will save you even MORE time:</p>
+                      <ul>
+                        <li>Manual video editing: <strong>2-3 hours/week</strong></li>
+                        <li>With AI clip analyzer: <strong>10 minutes/week</strong></li>
+                        <li><strong>Additional savings: ~2.5 hours/week</strong></li>
+                      </ul>
+
+                      <div style={{
+                        marginTop: '30px',
+                        padding: '20px',
+                        backgroundColor: '#e3f2fd',
+                        borderRadius: '8px',
+                        borderLeft: `4px solid #2196F3`
+                      }}>
+                        <strong>📞 Need Help?</strong>
+                        <p style={{ margin: '10px 0 0 0', fontSize: '14px' }}>
+                          If anything isn't working or you want to customize something, just let me know and I'll update it for you!
+                        </p>
+                      </div>
                     </div>
                   </div>
                 )}
@@ -687,7 +1014,7 @@
         }
 
         const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<ChurchContentGenerator />);
+        root.render(<ChurchContentSystem />);
     </script>
 </body>
 </html>
