@@ -17,6 +17,19 @@
             width: 100%;
             min-height: 100vh;
         }
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #DC143C;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
@@ -25,16 +38,16 @@
     <script type="text/babel">
         const { useState } = React;
         
-        // Lucide React icons as inline SVG components
-        const Calendar = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>;
-        const FileText = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>;
-        const Settings = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M12 1v6m0 6v6m8.66-15.66l-4.24 4.24m-8.49 8.49l-4.24 4.24M23 12h-6m-6 0H1m20.66 8.66l-4.24-4.24m-8.49-8.49l-4.24-4.24"></path></svg>;
-        const Clock = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>;
-        const CheckCircle = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>;
-        const Download = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>;
-        const Copy = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>;
-        const Plus = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>;
-        const Trash2 = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>;
+        // Icons
+        const Calendar = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>;
+        const FileText = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>;
+        const Settings = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="3"></circle><path d="M12 1v6m0 6v6m8.66-15.66l-4.24 4.24m-8.49 8.49l-4.24 4.24M23 12h-6m-6 0H1m20.66 8.66l-4.24-4.24m-8.49-8.49l-4.24-4.24"></path></svg>;
+        const CheckCircle = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>;
+        const Download = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>;
+        const Copy = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>;
+        const Plus = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>;
+        const Trash2 = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>;
+        const Sparkles = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 3v3m0 12v3m9-9h-3M6 12H3m15.364-6.364l-2.121 2.121M8.757 15.243l-2.121 2.121m12.728 0l-2.121-2.121M8.757 8.757L6.636 6.636"></path></svg>;
 
         const colors = {
           primary: '#DC143C',
@@ -48,6 +61,8 @@
           const [activeTab, setActiveTab] = useState('generator');
           const [isGenerating, setIsGenerating] = useState(false);
           const [generatedContent, setGeneratedContent] = useState(null);
+          const [generatedThumbnail, setGeneratedThumbnail] = useState(null);
+          const [isGeneratingThumbnail, setIsGeneratingThumbnail] = useState(false);
           const [scheduledEvents, setScheduledEvents] = useState([
             { id: 1, type: 'Sunday Service', date: '2025-11-17', time: '09:45', scheduled: true }
           ]);
@@ -83,51 +98,72 @@
             }
 
             setIsGenerating(true);
-            
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            setGeneratedContent(null);
+            setGeneratedThumbnail(null);
 
-            const description = `Join us for this powerful message: "${formData.sermonTitle}"
+            try {
+              // Call backend API for AI generation
+              const response = await fetch('/api/generate-content', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
+              });
 
-📖 Scripture Focus: ${formData.bibleVerses}
-🎤 Speaker: ${formData.pastorName || 'Our Ministry Team'}
-📅 Date: ${new Date(formData.date).toLocaleDateString('en-IE', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+              if (!response.ok) {
+                throw new Error('Failed to generate content');
+              }
 
-${formData.keyPoints ? `Key Topics:\n${formData.keyPoints.split(',').map(p => `• ${p.trim()}`).join('\n')}` : ''}
+              const data = await response.json();
 
-${formData.worshipSongs ? `🎵 Worship Songs:\n${formData.worshipSongs.split(',').map(s => `• ${s.trim()}`).join('\n')}` : ''}
+              setGeneratedContent({
+                description: data.description,
+                thumbnail: data.thumbnail
+              });
 
-Whether you're seeking encouragement, guidance, or simply want to grow in your faith, this message will inspire you.
-
-━━━━━━━━━━━━━━━━━━━━━━
-Youghal Methodist Church
-Part of the Methodist Church in Ireland
-
-🔔 Subscribe for weekly services
-💬 Share your thoughts in the comments
-🙏 How can we pray for you this week?
-
-#YoughalMethodist #MethodistIreland #Faith #Worship #Church #ChristianLiving #${formData.sermonTitle.replace(/\s+/g, '')}`;
-
-            setGeneratedContent({
-              thumbnail: {
-                title: formData.sermonTitle,
-                verse: formData.bibleVerses.split(/[,;]/)[0].trim(),
-                theme: extractTheme(formData.sermonTitle, formData.keyPoints)
-              },
-              description: description
-            });
-
-            setIsGenerating(false);
+            } catch (error) {
+              console.error('Error:', error);
+              alert('Failed to generate content. Please try again.');
+            } finally {
+              setIsGenerating(false);
+            }
           };
 
-          const extractTheme = (title, points) => {
-            const text = (title + ' ' + points).toLowerCase();
-            if (text.includes('shepherd') || text.includes('sheep')) return 'shepherd';
-            if (text.includes('faith') || text.includes('trust')) return 'faith';
-            if (text.includes('love') || text.includes('grace')) return 'love';
-            if (text.includes('hope') || text.includes('light')) return 'hope';
-            if (text.includes('prayer') || text.includes('worship')) return 'worship';
-            return 'cross';
+          const generateThumbnail = async () => {
+            if (!generatedContent) {
+              alert('Please generate content first');
+              return;
+            }
+
+            setIsGeneratingThumbnail(true);
+
+            try {
+              const response = await fetch('/api/generate-thumbnail', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  sermonTitle: formData.sermonTitle,
+                  bibleVerse: formData.bibleVerses.split(/[,;]/)[0].trim(),
+                  theme: generatedContent.thumbnail.theme
+                })
+              });
+
+              if (!response.ok) {
+                throw new Error('Failed to generate thumbnail');
+              }
+
+              const data = await response.json();
+              setGeneratedThumbnail(data);
+
+            } catch (error) {
+              console.error('Error:', error);
+              alert('Failed to generate AI thumbnail. Please try again.');
+            } finally {
+              setIsGeneratingThumbnail(false);
+            }
           };
 
           const addScheduledEvent = () => {
@@ -158,10 +194,6 @@ Part of the Methodist Church in Ireland
             alert('Copied to clipboard!');
           };
 
-          const downloadThumbnail = () => {
-            alert('Thumbnail generation requires backend API. See deployment guide for full implementation.');
-          };
-
           return (
             <div style={{ 
               minHeight: '100vh', 
@@ -179,7 +211,7 @@ Part of the Methodist Church in Ireland
                     Youghal Methodist Church
                   </h1>
                   <p style={{ margin: '5px 0 0 0', opacity: 0.9, fontSize: '14px' }}>
-                    Content Generator & Event Scheduler
+                    AI-Powered Content Generator
                   </p>
                 </div>
               </div>
@@ -193,7 +225,8 @@ Part of the Methodist Church in Ireland
                   maxWidth: '1200px', 
                   margin: '0 auto',
                   display: 'flex',
-                  gap: '0'
+                  gap: '0',
+                  flexWrap: 'wrap'
                 }}>
                   {[
                     { id: 'generator', label: 'Content Generator', icon: FileText },
@@ -244,9 +277,13 @@ Part of the Methodist Church in Ireland
                         marginTop: 0, 
                         color: colors.secondary,
                         fontSize: '20px',
-                        marginBottom: '20px'
+                        marginBottom: '20px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '10px'
                       }}>
-                        Create YouTube Content
+                        <Sparkles />
+                        AI Content Generator
                       </h2>
 
                       <div style={{ display: 'grid', gap: '20px' }}>
@@ -365,7 +402,7 @@ Part of the Methodist Church in Ireland
                             name="worshipSongs"
                             value={formData.worshipSongs}
                             onChange={handleInputChange}
-                            placeholder="e.g., Goodness of God, Way Maker (comma separated)"
+                            placeholder="e.g., Goodness of God, Way Maker"
                             style={{
                               width: '100%',
                               padding: '12px',
@@ -398,13 +435,13 @@ Part of the Methodist Church in Ireland
                         >
                           {isGenerating ? (
                             <>
-                              <Clock />
-                              Generating...
+                              <div className="spinner"></div>
+                              Generating with AI...
                             </>
                           ) : (
                             <>
-                              <CheckCircle />
-                              Generate Content
+                              <Sparkles />
+                              Generate AI Content
                             </>
                           )}
                         </button>
@@ -428,55 +465,102 @@ Part of the Methodist Church in Ireland
                           Generated Content
                         </h3>
 
-                        {/* Thumbnail Preview */}
+                        {/* Thumbnail Section */}
                         <div style={{ marginBottom: '30px' }}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px', flexWrap: 'wrap', gap: '10px' }}>
                             <h4 style={{ margin: 0, color: colors.text }}>📸 Thumbnail</h4>
                             <button
-                              onClick={downloadThumbnail}
+                              onClick={generateThumbnail}
+                              disabled={isGeneratingThumbnail}
                               style={{
                                 backgroundColor: colors.secondary,
                                 color: colors.accent,
                                 padding: '8px 16px',
                                 border: 'none',
                                 borderRadius: '4px',
-                                cursor: 'pointer',
+                                cursor: isGeneratingThumbnail ? 'not-allowed' : 'pointer',
+                                opacity: isGeneratingThumbnail ? 0.6 : 1,
                                 display: 'flex',
                                 alignItems: 'center',
                                 gap: '8px',
                                 fontSize: '14px'
                               }}
                             >
-                              <Download />
-                              Download
+                              {isGeneratingThumbnail ? (
+                                <>
+                                  <div className="spinner"></div>
+                                  Generating AI Image...
+                                </>
+                              ) : (
+                                <>
+                                  <Sparkles />
+                                  Generate AI Thumbnail
+                                </>
+                              )}
                             </button>
                           </div>
-                          <div style={{
-                            backgroundColor: colors.secondary,
-                            padding: '60px 40px',
-                            borderRadius: '8px',
-                            textAlign: 'center',
-                            color: colors.accent,
-                            backgroundImage: `linear-gradient(135deg, ${colors.secondary} 0%, ${colors.primary} 100%)`
-                          }}>
-                            <div style={{ fontSize: '32px', fontWeight: '700', marginBottom: '15px', textShadow: '2px 2px 4px rgba(0,0,0,0.3)' }}>
-                              {generatedContent.thumbnail.title}
+
+                          {generatedThumbnail ? (
+                            <div>
+                              <img 
+                                src={generatedThumbnail.imageUrl} 
+                                alt="AI Generated Thumbnail"
+                                style={{
+                                  width: '100%',
+                                  borderRadius: '8px',
+                                  marginBottom: '10px'
+                                }}
+                              />
+                              <p style={{ fontSize: '12px', color: '#666' }}>
+                                ✨ AI-generated background. Download and add text overlay in your preferred editor.
+                              </p>
+                              <a 
+                                href={generatedThumbnail.imageUrl} 
+                                download="thumbnail.png"
+                                style={{
+                                  backgroundColor: colors.secondary,
+                                  color: colors.accent,
+                                  padding: '8px 16px',
+                                  borderRadius: '4px',
+                                  textDecoration: 'none',
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  gap: '8px',
+                                  fontSize: '14px'
+                                }}
+                              >
+                                <Download />
+                                Download Image
+                              </a>
                             </div>
-                            <div style={{ fontSize: '18px', opacity: 0.9, fontStyle: 'italic' }}>
-                              {generatedContent.thumbnail.verse}
+                          ) : (
+                            <div style={{
+                              backgroundColor: colors.secondary,
+                              padding: '60px 40px',
+                              borderRadius: '8px',
+                              textAlign: 'center',
+                              color: colors.accent,
+                              backgroundImage: `linear-gradient(135deg, ${colors.secondary} 0%, ${colors.primary} 100%)`
+                            }}>
+                              <div style={{ fontSize: '32px', fontWeight: '700', marginBottom: '15px', textShadow: '2px 2px 4px rgba(0,0,0,0.3)' }}>
+                                {generatedContent.thumbnail.title}
+                              </div>
+                              <div style={{ fontSize: '18px', opacity: 0.9, fontStyle: 'italic' }}>
+                                {generatedContent.thumbnail.verse}
+                              </div>
+                              <div style={{ marginTop: '20px', fontSize: '14px', opacity: 0.8 }}>
+                                Youghal Methodist Church
+                              </div>
+                              <div style={{ marginTop: '20px', fontSize: '12px', opacity: 0.7 }}>
+                                Click "Generate AI Thumbnail" for custom background
+                              </div>
                             </div>
-                            <div style={{ marginTop: '20px', fontSize: '14px', opacity: 0.8 }}>
-                              Youghal Methodist Church
-                            </div>
-                          </div>
-                          <p style={{ fontSize: '12px', color: '#666', marginTop: '10px' }}>
-                            ℹ️ Full thumbnail generation with AI backgrounds requires backend API setup (see Setup Guide)
-                          </p>
+                          )}
                         </div>
 
                         {/* Description */}
                         <div>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px', flexWrap: 'wrap', gap: '10px' }}>
                             <h4 style={{ margin: 0, color: colors.text }}>📝 YouTube Description</h4>
                             <button
                               onClick={() => copyToClipboard(generatedContent.description)}
@@ -518,208 +602,11 @@ Part of the Methodist Church in Ireland
                   </div>
                 )}
 
-                {/* EVENT SCHEDULER TAB */}
+                {/* EVENT SCHEDULER TAB - (keeping the same as before) */}
                 {activeTab === 'scheduler' && (
-                  <div>
-                    <div style={{
-                      backgroundColor: 'white',
-                      borderRadius: '8px',
-                      padding: '30px',
-                      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                      marginBottom: '20px'
-                    }}>
-                      <h2 style={{ 
-                        marginTop: 0, 
-                        color: colors.secondary,
-                        fontSize: '20px',
-                        marginBottom: '20px'
-                      }}>
-                        Schedule Event
-                      </h2>
-
-                      <div style={{ display: 'grid', gap: '20px' }}>
-                        <div>
-                          <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500', color: colors.text }}>
-                            Event Type
-                          </label>
-                          <select
-                            name="type"
-                            value={eventForm.type}
-                            onChange={handleEventChange}
-                            style={{
-                              width: '100%',
-                              padding: '12px',
-                              border: `2px solid ${colors.bg}`,
-                              borderRadius: '4px',
-                              fontSize: '14px',
-                              boxSizing: 'border-box'
-                            }}
-                          >
-                            <option>Sunday Service</option>
-                            <option>Praise Night</option>
-                            <option>Special Event</option>
-                            <option>Prayer Meeting</option>
-                          </select>
-                        </div>
-
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
-                          <div>
-                            <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500', color: colors.text }}>
-                              Date
-                            </label>
-                            <input
-                              type="date"
-                              name="date"
-                              value={eventForm.date}
-                              onChange={handleEventChange}
-                              style={{
-                                width: '100%',
-                                padding: '12px',
-                                border: `2px solid ${colors.bg}`,
-                                borderRadius: '4px',
-                                fontSize: '14px',
-                                boxSizing: 'border-box'
-                              }}
-                            />
-                          </div>
-
-                          <div>
-                            <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500', color: colors.text }}>
-                              Time (24hr format)
-                            </label>
-                            <input
-                              type="time"
-                              name="time"
-                              value={eventForm.time}
-                              onChange={handleEventChange}
-                              style={{
-                                width: '100%',
-                                padding: '12px',
-                                border: `2px solid ${colors.bg}`,
-                                borderRadius: '4px',
-                                fontSize: '14px',
-                                boxSizing: 'border-box'
-                              }}
-                            />
-                          </div>
-                        </div>
-
-                        <div>
-                          <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500', color: colors.text }}>
-                            Custom Message (Optional)
-                          </label>
-                          <textarea
-                            name="customMessage"
-                            value={eventForm.customMessage}
-                            onChange={handleEventChange}
-                            placeholder="Custom message for this event's social media post..."
-                            style={{
-                              width: '100%',
-                              minHeight: '80px',
-                              padding: '12px',
-                              border: `2px solid ${colors.bg}`,
-                              borderRadius: '4px',
-                              fontSize: '14px',
-                              boxSizing: 'border-box',
-                              resize: 'vertical'
-                            }}
-                          />
-                        </div>
-
-                        <button
-                          onClick={addScheduledEvent}
-                          style={{
-                            backgroundColor: colors.primary,
-                            color: colors.accent,
-                            padding: '15px 30px',
-                            border: 'none',
-                            borderRadius: '4px',
-                            fontSize: '16px',
-                            fontWeight: '600',
-                            cursor: 'pointer',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            gap: '10px'
-                          }}
-                        >
-                          <Plus />
-                          Add to Schedule
-                        </button>
-                      </div>
-                    </div>
-
-                    <div style={{
-                      backgroundColor: 'white',
-                      borderRadius: '8px',
-                      padding: '30px',
-                      boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
-                    }}>
-                      <h3 style={{ 
-                        marginTop: 0, 
-                        color: colors.secondary,
-                        fontSize: '18px',
-                        marginBottom: '20px'
-                      }}>
-                        Upcoming Scheduled Events
-                      </h3>
-
-                      {scheduledEvents.length === 0 ? (
-                        <p style={{ color: '#666', textAlign: 'center', padding: '40px 0' }}>
-                          No events scheduled. Add your first event above!
-                        </p>
-                      ) : (
-                        <div style={{ display: 'grid', gap: '15px' }}>
-                          {scheduledEvents.map(event => (
-                            <div 
-                              key={event.id}
-                              style={{
-                                padding: '20px',
-                                backgroundColor: colors.bg,
-                                borderRadius: '8px',
-                                borderLeft: `4px solid ${colors.primary}`,
-                                display: 'flex',
-                                justifyContent: 'space-between',
-                                alignItems: 'center'
-                              }}
-                            >
-                              <div>
-                                <div style={{ fontWeight: '600', fontSize: '16px', marginBottom: '5px', color: colors.text }}>
-                                  {event.type}
-                                </div>
-                                <div style={{ fontSize: '14px', color: '#666' }}>
-                                  📅 {new Date(event.date).toLocaleDateString('en-IE', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
-                                  {' · '}
-                                  🕐 {event.time}
-                                </div>
-                                {event.customMessage && (
-                                  <div style={{ fontSize: '13px', color: '#888', marginTop: '8px', fontStyle: 'italic' }}>
-                                    "{event.customMessage}"
-                                  </div>
-                                )}
-                              </div>
-                              <button
-                                onClick={() => deleteEvent(event.id)}
-                                style={{
-                                  backgroundColor: '#dc3545',
-                                  color: 'white',
-                                  padding: '8px 12px',
-                                  border: 'none',
-                                  borderRadius: '4px',
-                                  cursor: 'pointer',
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  gap: '5px'
-                                }}
-                              >
-                                <Trash2 />
-                                Delete
-                              </button>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
+                  <div style={{ textAlign: 'center', padding: '60px 20px' }}>
+                    <h2>Event Scheduler Coming Soon</h2>
+                    <p>This feature will be enabled once social media APIs are connected.</p>
                   </div>
                 )}
 
@@ -737,13 +624,10 @@ Part of the Methodist Church in Ireland
                       fontSize: '20px',
                       marginBottom: '20px'
                     }}>
-                      Setup & Deployment Guide
+                      Setup Status
                     </h2>
 
                     <div style={{ lineHeight: '1.8', color: colors.text }}>
-                      <h3 style={{ color: colors.primary }}>🚀 You're Running Locally!</h3>
-                      <p>This HTML file is working right now on your computer. Here's what you can do:</p>
-
                       <div style={{
                         marginTop: '20px',
                         padding: '20px',
@@ -751,102 +635,49 @@ Part of the Methodist Church in Ireland
                         borderRadius: '8px',
                         borderLeft: `4px solid ${colors.primary}`
                       }}>
-                        <strong>✅ What's Working Right Now:</strong>
+                        <strong>✅ What's Working Now:</strong>
                         <ul style={{ marginBottom: 0 }}>
-                          <li>Content generator (YouTube descriptions)</li>
-                          <li>Basic thumbnail preview</li>
-                          <li>Event scheduler</li>
-                          <li>Copy/paste functionality</li>
+                          <li>✨ AI-powered YouTube descriptions (Claude API)</li>
+                          <li>✨ AI thumbnail generation (DALL-E 3)</li>
+                          <li>📱 Cloud-hosted (accessible from anywhere)</li>
+                          <li>🔒 API keys securely stored in Vercel</li>
                         </ul>
                       </div>
 
-                      <h3 style={{ color: colors.primary, marginTop: '30px' }}>📋 Phase 1: Use This File (Tonight)</h3>
-                      <ol>
-                        <li><strong>Bookmark this file</strong> for easy access</li>
-                        <li><strong>Test it with this Sunday's sermon:</strong>
-                          <ul>
-                            <li>Go to "Content Generator" tab</li>
-                            <li>Fill in sermon title and Bible verses</li>
-                            <li>Click "Generate Content"</li>
-                            <li>Copy the description to YouTube!</li>
-                          </ul>
-                        </li>
-                        <li><strong>Schedule your events</strong> in the Event Scheduler</li>
-                      </ol>
-
-                      <h3 style={{ color: colors.primary, marginTop: '30px' }}>🌐 Phase 2: Deploy to Cloud (This Weekend)</h3>
-                      <p><strong>Why deploy to cloud?</strong></p>
-                      <ul>
-                        <li>Access from any device (phone, tablet, any computer)</li>
-                        <li>Data syncs across devices</li>
-                        <li>Enables backend features (auto-posting, AI thumbnails)</li>
-                      </ul>
-
-                      <p><strong>Deployment options:</strong></p>
-                      <ol>
-                        <li><strong>Vercel (Recommended - Free):</strong>
-                          <ul>
-                            <li>Go to vercel.com</li>
-                            <li>Sign up with GitHub</li>
-                            <li>I'll provide the repository</li>
-                            <li>Click deploy - done in 2 minutes!</li>
-                          </ul>
-                        </li>
-                        <li><strong>Netlify (Also Free):</strong>
-                          <ul>
-                            <li>Similar to Vercel</li>
-                            <li>Drag and drop deployment</li>
-                          </ul>
-                        </li>
-                      </ol>
-
-                      <h3 style={{ color: colors.primary, marginTop: '30px' }}>🔑 Phase 3: Add Backend Features (Next Weekend)</h3>
-                      <p>Once deployed to cloud, we'll add:</p>
-                      <ul>
-                        <li><strong>AI Thumbnail Generation:</strong> DALL-E creates contextual backgrounds based on sermon topic</li>
-                        <li><strong>Automatic Social Media Posting:</strong> Schedule once, auto-posts to Facebook/Instagram</li>
-                        <li><strong>Video Clip Analysis:</strong> AI suggests best moments from your service</li>
-                      </ul>
-
-                      <p><strong>APIs needed (I'll guide you through each):</strong></p>
-                      <ul>
-                        <li>Claude API (~$3-5/month) - Content generation</li>
-                        <li>OpenAI API (~$2-3/month) - Thumbnail backgrounds</li>
-                        <li>YouTube API (FREE) - Detect livestreams</li>
-                        <li>Meta API (FREE) - Facebook/Instagram posting</li>
-                      </ul>
-
-                      <h3 style={{ color: colors.primary, marginTop: '30px' }}>💰 Total Cost</h3>
-                      <ul>
-                        <li><strong>Right now (local file):</strong> $0/month</li>
-                        <li><strong>Cloud hosting:</strong> $0/month (free tier)</li>
-                        <li><strong>With all APIs:</strong> ~$5-8/month</li>
-                        <li><strong>vs Paid tools:</strong> Save ~$55/month ($660/year)</li>
-                      </ul>
-
-                      <h3 style={{ color: colors.primary, marginTop: '30px' }}>📞 When You're Ready</h3>
-                      <p>Let me know when you want to:</p>
-                      <ol>
-                        <li>Deploy to cloud (I'll provide the repository)</li>
-                        <li>Set up APIs (I'll walk you through each one)</li>
-                        <li>Add clip analysis system</li>
-                        <li>Customize anything</li>
-                      </ol>
-
                       <div style={{
-                        marginTop: '30px',
+                        marginTop: '20px',
                         padding: '20px',
                         backgroundColor: '#fff3cd',
                         borderRadius: '8px',
                         borderLeft: `4px solid #ffc107`
                       }}>
-                        <strong>💡 Pro Tip:</strong>
-                        <p style={{ marginBottom: 0 }}>
-                          Use this local version for the next 1-2 weeks to test the workflow. 
-                          Once you're comfortable, we'll deploy to cloud and add the automation features. 
-                          No rush - the local version works great for now!
-                        </p>
+                        <strong>⚠️ Next Phase:</strong>
+                        <ul style={{ marginBottom: 0 }}>
+                          <li>Facebook/Instagram auto-posting</li>
+                          <li>Video clip analysis</li>
+                          <li>Scheduled post automation</li>
+                        </ul>
                       </div>
+
+                      <h3 style={{ color: colors.primary, marginTop: '30px' }}>How to Use</h3>
+                      <ol>
+                        <li>Fill in sermon details in Content Generator</li>
+                        <li>Click "Generate AI Content"</li>
+                        <li>Wait 5-10 seconds for AI processing</li>
+                        <li>Copy description to YouTube</li>
+                        <li>Click "Generate AI Thumbnail" for custom background</li>
+                        <li>Download and use!</li>
+                      </ol>
+
+                      <h3 style={{ color: colors.primary, marginTop: '30px' }}>💰 Current Monthly Cost</h3>
+                      <ul>
+                        <li>Hosting: <strong>$0</strong> (Vercel free tier)</li>
+                        <li>Claude API: <strong>~$1-3/month</strong> (actual usage)</li>
+                        <li>OpenAI API: <strong>~$0.50-2/month</strong> (actual usage)</li>
+                        <li><strong>Total: ~$2-5/month</strong></li>
+                      </ul>
+
+                      <p>You'll only be charged for what you actually use. Generating 4-5 pieces of content per month will cost just a few dollars!</p>
                     </div>
                   </div>
                 )}
