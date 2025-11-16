@@ -45,7 +45,9 @@ Requirements:
 - Add relevant hashtags
 - Mention "Youghal Methodist Church - Part of the Methodist Church in Ireland"
 - Keep it under 5000 characters
-- Make it feel authentic and pastoral, not corporate`
+- Make it feel authentic and pastoral, not corporate
+
+CRITICAL: Output as PLAIN TEXT only. Do NOT use markdown formatting. Do NOT use asterisks for bold (**text**), underscores for italics (_text_), or any other markdown syntax. Just use plain text with emojis and line breaks. YouTube descriptions don't support markdown.`
         }]
       })
     });
