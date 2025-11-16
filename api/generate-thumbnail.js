@@ -2,82 +2,108 @@
 // Vercel Serverless Function for AI Thumbnail Generation
 
 export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
   }
 
   try {
     const { sermonTitle, bibleVerse, theme } = req.body;
 
     if (!sermonTitle) {
-      return res.status(400).json({ error: "Sermon title is required" });
+      return res.status(400).json({ error: 'Sermon title is required' });
     }
 
-    // Build the image prompt
+    // Create theme-specific prompt for DALL-E
     const prompt = generatePrompt(theme, sermonTitle);
 
-    // Call OpenAI Images API (NEW ENDPOINT)
-    const response = await fetch("https://api.openai.com/v1/images", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
-      },
-      body: JSON.stringify({
-        model: "gpt-image-1", // You can switch to "dall-e-3" if needed
-        prompt: prompt,
-        size: "1792x1024", // YouTube thumbnail ratio
-      }),
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      console.error("OpenAI API Error:", data);
-      return res
-        .status(500)
-        .json({ error: "Failed to generate thumbnail", details: data });
+    // Check if API key exists
+    if (!process.env.OPENAI_API_KEY) {
+      return res.status(500).json({ error: 'OpenAI API key not configured' });
     }
 
-    // Extract the image URL from the response
-    const imageUrl = data.data?.[0]?.url;
+    // Call OpenAI DALL-E API
+    const response = await fetch('https://api.openai.com/v1/images/generations', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: 'dall-e-3',
+        prompt: prompt,
+        n: 1,
+        size: '1792x1024', // YouTube thumbnail ratio
+        quality: 'standard',
+        style: 'natural'
+      })
+    });
 
+    // Get response text first to debug
+    const responseText = await response.text();
+    
+    if (!response.ok) {
+      console.error('OpenAI API Error Status:', response.status);
+      console.error('OpenAI API Error Response:', responseText);
+      
+      // Try to parse as JSON, but handle HTML errors
+      let errorDetails;
+      try {
+        errorDetails = JSON.parse(responseText);
+      } catch (e) {
+        errorDetails = { message: responseText.substring(0, 200) };
+      }
+      
+      return res.status(500).json({ 
+        error: 'Failed to generate thumbnail', 
+        details: errorDetails,
+        status: response.status
+      });
+    }
+
+    const data = JSON.parse(responseText);
+    const imageUrl = data.data[0].url;
+
+    // Return the image URL and text overlay data
     return res.status(200).json({
       imageUrl: imageUrl,
       overlay: {
         title: sermonTitle,
         verse: bibleVerse,
-        church: "Youghal Methodist Church",
-      },
+        church: 'Youghal Methodist Church'
+      }
     });
+
   } catch (error) {
-    console.error("Server Error:", error);
-    return res.status(500).json({
-      error: "Internal server error",
-      message: error.message,
-    });
+    console.error('Server Error:', error);
+    return res.status(500).json({ error: 'Internal server error', message: error.message });
   }
 }
 
-// Prompt builder for DALL-E / GPT-Image
+// Generate theme-specific prompts for DALL-E
 function generatePrompt(theme, sermonTitle) {
-  const baseStyle =
-    "Professional, warm, inspirational church background. Clean, not cluttered. Soft lighting. High-quality. Room for text overlay.";
-
+  const baseStyle = 'Professional, warm, inspirational church service background. Clean, not cluttered. Suitable for text overlay. Methodist church aesthetic. Soft lighting, welcoming atmosphere.';
+  
   const themePrompts = {
-    shepherd: `${baseStyle} Rolling green hills with a shepherd caring for sheep at golden hour.`,
-    faith: `${baseStyle} Person standing on a mountain peak at sunrise, light shining through clouds.`,
-    love: `${baseStyle} Golden light, warm glow, symbol of compassion and community.`,
-    hope: `${baseStyle} Dawn breaking over horizon, new beginnings, rays of hope.`,
-    worship: `${baseStyle} Hands raised in worship, soft stage lights, joyful reverence.`,
-    cross: `${baseStyle} Simple wooden cross silhouetted against glowing sunset.`,
-    peace: `${baseStyle} Calm waters, serene landscape, dove in flight.`,
-    joy: `${baseStyle} Celebration, bright radiant colors, uplifting atmosphere.`,
-    strength: `${baseStyle} Strong oak tree, resilient roots, mountain backdrop.`,
-    community: `${baseStyle} Diverse group of people holding hands in unity.`,
+    shepherd: `${baseStyle} Rolling green hills with a shepherd caring for sheep at golden hour. Peaceful pastoral scene. Gentle, caring atmosphere.`,
+    
+    faith: `${baseStyle} Person standing on mountain peak at sunrise, arms raised in trust and faith. Vast sky, rays of light breaking through clouds. Hopeful and uplifting.`,
+    
+    love: `${baseStyle} Warm golden light radiating outward, hearts and community gathering together. Compassionate, embracing atmosphere. Red and warm tones.`,
+    
+    hope: `${baseStyle} Dawn breaking over horizon, darkness giving way to brilliant light. New beginning, fresh start. Rays of hope piercing through.`,
+    
+    worship: `${baseStyle} Hands raised in worship, soft stage lights, intimate worship atmosphere. Musical instruments subtly in background. Reverent and joyful.`,
+    
+    cross: `${baseStyle} Simple wooden cross silhouetted against beautiful sunset sky. Peaceful, contemplative. Focus on sacrifice and salvation.`,
+    
+    peace: `${baseStyle} Calm water reflecting sky, serene landscape, dove in flight. Tranquil atmosphere, soft blues and whites. Still and restful.`,
+    
+    joy: `${baseStyle} Bright celebration, people with raised hands in joy, vibrant warm colors, confetti of light. Jubilant and festive church atmosphere.`,
+    
+    strength: `${baseStyle} Strong oak tree standing firm in wind, roots deep. Mountain landscape. Resilient, steadfast. Powerful but peaceful.`,
+    
+    community: `${baseStyle} Diverse group of people holding hands in circle, unity and togetherness. Warm community gathering, supportive atmosphere.`
   };
 
-  const selectedPrompt = themePrompts[theme] || themePrompts.cross;
-
-  return `${selectedPrompt} Sermon Title: ${sermonTitle}`;
+  return themePrompts[theme] || themePrompts.cross;
 }
