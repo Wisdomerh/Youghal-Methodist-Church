@@ -89,18 +89,19 @@ TEXT STYLE REQUIREMENTS:
     // -------- 3) Generate thumbnail using GPT-Image-1 --------
 
     const openaiResponse = await fetch("https://api.openai.com/v1/images/generations", {
-      method: "POST",
-      headers: {
+    method: "POST",
+    headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
-      },
-      body: JSON.stringify({
+    },
+    body: JSON.stringify({
         model: "gpt-image-1",
         prompt: finalPrompt,
-        size: "1920x1080",
+        size: "1536x1024",   // <-- Fixed
         n: 1
-      }),
+    }),
     });
+
 
     const text = await openaiResponse.text();
 
