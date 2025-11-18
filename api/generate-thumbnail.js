@@ -79,12 +79,11 @@ Output ONLY the gpt-image-1 prompt, nothing else. No preamble, no explanation. J
         'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
       },
       body: JSON.stringify({
-        model: 'gpt-image-1', // Latest model - better at text, faces, and instruction following
+        model: 'gpt-image-1',
         prompt: prompt,
         n: 1,
         size: '1536x1024', // Landscape format - good for upscaling to 1920x1080
-        quality: 'high', // Use high quality
-        response_format: 'url' // Make sure we get URL, not base64
+        quality: 'high' // Use high quality
       })
     });
 
