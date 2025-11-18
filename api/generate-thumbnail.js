@@ -110,7 +110,38 @@ Output ONLY the gpt-image-1 prompt, nothing else. No preamble, no explanation. J
     }
 
     const data = JSON.parse(responseText);
-    const imageUrl = data.data[0].url;
+    console.log('OpenAI gpt-image-1 response structure:', Object.keys(data));
+    
+    // Check if we have the expected data structure
+    if (!data.data || !data.data[0]) {
+      console.error('Unexpected response structure:', data);
+      return res.status(500).json({ 
+        error: 'Invalid response from OpenAI',
+        details: 'Missing data array in response'
+      });
+    }
+    
+    // gpt-image-1 returns base64 by default, not URL
+    const imageData = data.data[0];
+    let imageUrl;
+    
+    if (imageData.url) {
+      // If URL is provided (some configurations)
+      imageUrl = imageData.url;
+      console.log('Image URL found:', imageUrl);
+    } else if (imageData.b64_json) {
+      // If base64 is provided (default for gpt-image-1)
+      const base64Data = imageData.b64_json;
+      // Convert base64 to data URL
+      imageUrl = `data:image/png;base64,${base64Data}`;
+      console.log('Base64 image converted to data URL (length:', base64Data.length, ')');
+    } else {
+      console.error('No image data found in response:', imageData);
+      return res.status(500).json({ 
+        error: 'Invalid response from OpenAI',
+        details: 'No URL or base64 data in response'
+      });
+    }
 
     // Return the image URL - 1536x1024 is optimal for upscaling to 1920x1080
     return res.status(200).json({

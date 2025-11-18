@@ -187,10 +187,19 @@
               });
 
               if (!response.ok) {
-                throw new Error('Failed to generate thumbnail');
+                const errorData = await response.json();
+                console.error('Thumbnail generation failed:', errorData);
+                throw new Error(errorData.error || 'Failed to generate thumbnail');
               }
 
               const data = await response.json();
+              console.log('Thumbnail API response:', data);
+              
+              // Validate that we have an imageUrl
+              if (!data.imageUrl) {
+                console.error('No imageUrl in response:', data);
+                throw new Error('No image URL returned from API');
+              }
               
               // Store the image data
               setGeneratedThumbnail({
@@ -199,24 +208,57 @@
                 overlay: data.overlay
               });
 
+              console.log('Thumbnail set successfully:', data.imageUrl);
+
             } catch (error) {
               console.error('Error:', error);
-              alert('Failed to generate AI thumbnail. Please try again.');
+              alert(`Failed to generate AI thumbnail: ${error.message}`);
+              setGeneratedThumbnail(null);
             } finally {
               setIsGeneratingThumbnail(false);
             }
           };
 
           const downloadThumbnail = async () => {
-            if (!generatedThumbnail || !generatedThumbnail.imageUrl) {
-              alert('No thumbnail to download');
+            console.log('Download clicked. Current thumbnail state:', generatedThumbnail);
+            
+            if (!generatedThumbnail) {
+              alert('No thumbnail generated yet. Please generate a thumbnail first.');
+              return;
+            }
+            
+            if (!generatedThumbnail.imageUrl) {
+              alert('Thumbnail URL is missing. Please regenerate the thumbnail.');
+              console.error('Thumbnail state:', generatedThumbnail);
               return;
             }
 
             try {
-              // Fetch the image
-              const response = await fetch(generatedThumbnail.imageUrl);
-              const blob = await response.blob();
+              console.log('Downloading from:', generatedThumbnail.imageUrl.substring(0, 50) + '...');
+              
+              let blob;
+              
+              // Check if it's a data URL (base64) or regular URL
+              if (generatedThumbnail.imageUrl.startsWith('data:')) {
+                // It's a base64 data URL
+                const base64Data = generatedThumbnail.imageUrl.split(',')[1];
+                const byteCharacters = atob(base64Data);
+                const byteNumbers = new Array(byteCharacters.length);
+                for (let i = 0; i < byteCharacters.length; i++) {
+                  byteNumbers[i] = byteCharacters.charCodeAt(i);
+                }
+                const byteArray = new Uint8Array(byteNumbers);
+                blob = new Blob([byteArray], { type: 'image/png' });
+                console.log('Converted base64 to blob');
+              } else {
+                // It's a regular URL
+                const response = await fetch(generatedThumbnail.imageUrl);
+                if (!response.ok) {
+                  throw new Error('Failed to fetch image');
+                }
+                blob = await response.blob();
+                console.log('Fetched image from URL');
+              }
               
               // Create download link
               const url = window.URL.createObjectURL(blob);
@@ -227,10 +269,11 @@
               a.click();
               document.body.removeChild(a);
               window.URL.revokeObjectURL(url);
+              
+              console.log('Download successful');
             } catch (error) {
               console.error('Download error:', error);
-              // Fallback: open in new tab
-              window.open(generatedThumbnail.imageUrl, '_blank');
+              alert('Download failed: ' + error.message);
             }
           };
 
