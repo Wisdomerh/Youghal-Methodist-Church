@@ -82,9 +82,9 @@ Output ONLY the gpt-image-1 prompt, nothing else. No preamble, no explanation. J
         model: 'gpt-image-1', // Latest model - better at text, faces, and instruction following
         prompt: prompt,
         n: 1,
-        size: '1024x1024', // gpt-image-1 supports: 1024x1024, 1024x1536, 1536x1024
+        size: '1536x1024', // Landscape format - good for upscaling to 1920x1080
         quality: 'high', // Use high quality
-        output_format: 'png'
+        response_format: 'url' // Make sure we get URL, not base64
       })
     });
 
@@ -113,18 +113,16 @@ Output ONLY the gpt-image-1 prompt, nothing else. No preamble, no explanation. J
     const data = JSON.parse(responseText);
     const imageUrl = data.data[0].url;
 
-    // Return the image URL - note: DALL-E generates 1792x1024
-    // User will need to resize to 1920x1080 or we can add resize endpoint
+    // Return the image URL - 1536x1024 is optimal for upscaling to 1920x1080
     return res.status(200).json({
       imageUrl: imageUrl,
-      originalSize: '1792x1024',
-      recommendedSize: '1920x1080',
-      note: 'Download and resize to 1920x1080 if needed. Add text overlay using image editor.',
+      originalSize: '1536x1024',
+      targetSize: '1920x1080',
+      note: 'Image generated at 1536x1024. Upscale to 1920x1080 in your editor for best quality.',
       overlay: {
         title: sermonTitle,
         verse: bibleVerse,
-        church: 'Youghal Methodist Church',
-        textPlacement: 'Place title at bottom center, verse above it, church name at very bottom'
+        church: 'Youghal Methodist Church'
       }
     });
 
